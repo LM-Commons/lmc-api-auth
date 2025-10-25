@@ -1,0 +1,10 @@
+<?php
+
+namespace Lmc\Api\Auth\Repository;
+
+use Lmc\Api\Auth\Adapter\ApiAccessKeyInterface;
+
+interface ApiAccessKeyRepositoryInterface
+{
+    public function getByClientId(string $clientId): ?ApiAccessKeyInterface;
+}
