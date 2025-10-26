@@ -7,6 +7,7 @@ namespace Lmc\Api\Auth;
 use Laminas\Authentication\AuthenticationService;
 use Lmc\Api\Auth\Identity\AuthenticatedIdentity;
 use Lmc\Api\Auth\Identity\GuestIdentity;
+use Lmc\Api\Auth\Identity\IdentityInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -31,6 +32,6 @@ final readonly class LaminasAuthenticationMiddleware implements MiddlewareInterf
         } else {
             $authIdentity = new GuestIdentity();
         }
-        return $handler->handle($request->withAttribute(AuthenticatedIdentity::class, $authIdentity));
+        return $handler->handle($request->withAttribute(IdentityInterface::class, $authIdentity));
     }
 }
