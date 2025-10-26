@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Lmc\Api\Auth;
 
-use Enofily\AuthDb\Entity\ApiAccessKey;
-use Enofily\AuthDb\Service\ApiAccessKeyService;
 use Lmc\Api\Auth\Adapter\ApiAccessKeyInterface;
 use Lmc\Api\Auth\Identity\AuthenticatedIdentity;
 use Lmc\Api\Auth\Identity\GuestIdentity;
-use Lmc\Api\Auth\Identity\IdentityInterface;
 use Lmc\Api\Auth\Repository\ApiAccessKeyRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,7 +26,7 @@ final readonly class ApiAccessKeyAuthenticationMiddleware implements MiddlewareI
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // if there is already an identity, do nothing
-        if ($request->getAttribute(IdentityInterface::class) !== null) {
+        if ($request->getAttribute(AuthenticatedIdentity::class) !== null) {
             return $handler->handle($request);
         }
 
@@ -37,21 +34,21 @@ final readonly class ApiAccessKeyAuthenticationMiddleware implements MiddlewareI
         $clientSecret = $request->getQueryParams()['client_secret'] ?? null;
         if ($clientId === null && $clientSecret === null) {
             return $handler->handle($request
-            ->withAttribute(IdentityInterface::class, new GuestIdentity()));
+            ->withAttribute(AuthenticatedIdentity::class, new GuestIdentity()));
         }
 
         $apiAccessKey = $this->apiAccessKeyRepository->getByClientId($clientId);
         if (! $apiAccessKey instanceof ApiAccessKeyInterface) {
             return $handler->handle($request
-            ->withAttribute(IdentityInterface::class, new GuestIdentity()));
+            ->withAttribute(AuthenticatedIdentity::class, new GuestIdentity()));
         }
 
         if ($clientSecret !== $apiAccessKey->getClientSecret()) {
             return $handler->handle($request
-            ->withAttribute(IdentityInterface::class, new GuestIdentity()));
+            ->withAttribute(AuthenticatedIdentity::class, new GuestIdentity()));
         }
 
         return $handler->handle($request
-        ->withAttribute(IdentityInterface::class, new AuthenticatedIdentity($apiAccessKey)));
+        ->withAttribute(AuthenticatedIdentity::class, new AuthenticatedIdentity($apiAccessKey)));
     }
 }
