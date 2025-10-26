@@ -9,10 +9,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class RetrieveIdentity
 {
-    public static function fromRequest(ServerRequestInterface $req): AuthenticatedIdentity
+    public static function fromRequest(ServerRequestInterface $req): IdentityInterface
     {
-        $identity = $req->getAttribute(AuthenticatedIdentity::class);
-        if (! $identity instanceof AuthenticatedIdentity) {
+        $identity = $req->getAttribute(IdentityInterface::class);
+        if (! $identity instanceof IdentityInterface) {
             throw AuthenticatedIdentityNotFoundException::forMissingIdentityAttribute();
         }
         return $identity;
