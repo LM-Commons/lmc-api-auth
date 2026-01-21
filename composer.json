@@ -18,7 +18,10 @@
     "laminas/laminas-coding-standard": "^3.1",
     "phpunit/phpunit": "11.5.48",
     "psalm/plugin-phpunit": "^0.19.5",
-    "vimeo/psalm": "6.14.3"
+    "vimeo/psalm": "6.14.3",
+    "amphp/parallel": "^2.3.3",
+    "amphp/dns": "^2.4.0",
+    "amphp/socket": "^2.3.1"
   },
   "autoload": {
     "psr-4": {
