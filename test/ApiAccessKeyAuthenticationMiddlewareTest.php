@@ -52,7 +52,8 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
                 'client_secret' => null,
             ]);
         $this->request->expects($this->once())->method('withAttribute')
-            ->with(IdentityInterface::class, new GuestIdentity());
+            ->with(IdentityInterface::class, new GuestIdentity())
+            ->willReturnSelf();
         $this->handler->expects($this->once())->method('handle');
         $middleware = new ApiAccessKeyAuthenticationMiddleware(
             $this->createMock(ApiAccessKeyRepositoryInterface::class),
@@ -74,7 +75,8 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
         $apiRepository->expects($this->once())->method('getByClientId')
             ->with('foo')->willReturn(null);
         $this->request->expects($this->once())->method('withAttribute')
-            ->with(IdentityInterface::class, new GuestIdentity());
+            ->with(IdentityInterface::class, new GuestIdentity())
+            ->willReturnSelf();
         $this->handler->expects($this->once())->method('handle');
         $middleware = new ApiAccessKeyAuthenticationMiddleware($apiRepository);
         $middleware->process($this->request, $this->handler);
@@ -97,7 +99,8 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
         $apiRepository->expects($this->once())->method('getByClientId')
             ->with('foo')->willReturn($apiAccessKey);
         $this->request->expects($this->once())->method('withAttribute')
-            ->with(IdentityInterface::class, new GuestIdentity());
+            ->with(IdentityInterface::class, new GuestIdentity())
+            ->willReturnSelf();
         $this->handler->expects($this->once())->method('handle');
         $middleware = new ApiAccessKeyAuthenticationMiddleware($apiRepository);
         $middleware->process($this->request, $this->handler);
@@ -123,7 +126,8 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
             ->with(
                 IdentityInterface::class,
                 $this->isInstanceOf(AuthenticatedIdentity::class),
-            );
+            )
+            ->willReturnSelf();
         $this->handler->expects($this->once())->method('handle');
         $middleware = new ApiAccessKeyAuthenticationMiddleware($apiRepository);
         $middleware->process($this->request, $this->handler);

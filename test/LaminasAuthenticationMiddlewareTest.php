@@ -36,7 +36,8 @@ final class LaminasAuthenticationMiddlewareTest extends TestCase
         $this->handler->expects($this->once())->method('handle')
             ->with($this->isInstanceOf(ServerRequestInterface::class));
         $this->request->expects($this->once())->method('withAttribute')
-            ->with(IdentityInterface::class, $this->isInstanceOf(GuestIdentity::class));
+            ->with(IdentityInterface::class, $this->isInstanceOf(GuestIdentity::class))
+            ->willReturnSelf();
         $middleware = new LaminasAuthenticationMiddleware($this->authenticationService);
         $middleware->process($this->request, $this->handler);
     }
@@ -49,7 +50,8 @@ final class LaminasAuthenticationMiddlewareTest extends TestCase
         $this->handler->expects($this->once())->method('handle')
             ->with($this->isInstanceOf(ServerRequestInterface::class));
         $this->request->expects($this->once())->method('withAttribute')
-            ->with(IdentityInterface::class, $this->isInstanceOf(AuthenticatedIdentity::class));
+            ->with(IdentityInterface::class, $this->isInstanceOf(AuthenticatedIdentity::class))
+            ->willReturnSelf();
         $middleware = new LaminasAuthenticationMiddleware($this->authenticationService);
         $middleware->process($this->request, $this->handler);
     }
