@@ -8,6 +8,7 @@ use Laminas\Authentication\AuthenticationService;
 use Lmc\Api\Auth\Identity\AuthenticatedIdentity;
 use Lmc\Api\Auth\Identity\GuestIdentity;
 use Lmc\Api\Auth\Identity\IdentityInterface;
+use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -23,6 +24,7 @@ final readonly class LaminasAuthenticationMiddleware implements MiddlewareInterf
     /**
      * @inheritDoc
      */
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->authenticationService->hasIdentity()) {

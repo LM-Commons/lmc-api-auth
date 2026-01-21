@@ -7,10 +7,11 @@ namespace Lmc\Api\Auth;
 use Lmc\Api\Auth\Repository\ApiAccessKeyRepositoryInterface;
 use Psr\Container\ContainerInterface;
 
-class ApiAccessKeyAuthenticationMiddlewareFactory
+final class ApiAccessKeyAuthenticationMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container): ApiAccessKeyAuthenticationMiddleware
     {
+        /** @psalm-suppress MixedArgument */
         return new ApiAccessKeyAuthenticationMiddleware(
             $container->get(ApiAccessKeyRepositoryInterface::class),
         );

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Lmc\Api\Auth\Identity;
 
-class AuthenticatedIdentity implements IdentityInterface
+use Override;
+
+final class AuthenticatedIdentity implements IdentityInterface
 {
     protected mixed $identity;
 
@@ -13,6 +15,7 @@ class AuthenticatedIdentity implements IdentityInterface
         $this->identity = $identity;
     }
 
+    #[Override]
     public function getAuthenticationIdentity(): mixed
     {
         return $this->identity;

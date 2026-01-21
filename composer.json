@@ -27,7 +27,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "LmcTest\\Api\\Auth\\": "src/"
+      "LmcTest\\Api\\Auth\\": "test/"
     }
   },
   "extra": {
