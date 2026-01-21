@@ -6,7 +6,6 @@ namespace Lmc\Api\Auth\Identity;
 
 class AuthenticatedIdentity implements IdentityInterface
 {
-
     protected mixed $identity;
 
     public function __construct(mixed $identity)

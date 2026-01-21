@@ -15,5 +15,4 @@ final class AuthenticatedIdentityNotFoundException extends RuntimeException impl
             . ' attempting to retrieve an identity instance.'
         );
     }
-
 }
