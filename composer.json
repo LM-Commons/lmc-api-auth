@@ -1,27 +1,43 @@
 {
-  "name": "lm-commons/repository-template",
-  "description": "Repository template",
+  "name": "lm-commons/lmc-api-auth",
+  "description": "API tools to authenticate requests",
   "license": "BSD-3-Clause",
   "authors": [
     {
-      "name": "Firstname Lastname",
-      "email": "email@example.com"
+      "name": "Eric Richer",
+      "email": "eric.richer@vistoconsulting.com"
     }
   ],
   "require": {
-    "php": "~8.2.0 || ~8.3.0 || ~8.4.0"
+    "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+    "laminas/laminas-authentication": "^2.13",
+    "psr/http-server-handler": "^1.0",
+    "psr/http-server-middleware": "^1.0",
+    "psr/container": "^1.1 || ^2.0"
   },
   "require-dev": {
     "laminas/laminas-coding-standard": "^3.1",
-    "phpunit/phpunit": "^11.5",
+    "phpunit/phpunit": "11.5.48",
     "psalm/plugin-phpunit": "^0.19.5",
-    "vimeo/psalm": "^6.10"
+    "vimeo/psalm": "6.14.3",
+    "amphp/parallel": "^2.3.3",
+    "amphp/dns": "^2.4.0",
+    "amphp/socket": "^2.3.1"
   },
   "autoload": {
-
+    "psr-4": {
+      "Lmc\\Api\\Auth\\": "src/"
+    }
   },
   "autoload-dev": {
-
+    "psr-4": {
+      "LmcTest\\Api\\Auth\\": "test/"
+    }
+  },
+  "extra": {
+    "laminas": {
+      "config-provider": "Lmc\\Api\\Auth\\ConfigProvider"
+    }
   },
   "config": {
     "allow-plugins": {
