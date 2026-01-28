@@ -9,7 +9,7 @@
     }
   ],
   "require": {
-    "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+    "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
     "laminas/laminas-authentication": "^2.13",
     "psr/http-server-handler": "^1.0",
     "psr/http-server-middleware": "^1.0",
@@ -17,7 +17,7 @@
   },
   "require-dev": {
     "laminas/laminas-coding-standard": "^3.1",
-    "phpunit/phpunit": "11.5.48",
+    "phpunit/phpunit": "^12.5",
     "psalm/plugin-phpunit": "^0.19.5",
     "vimeo/psalm": "6.14.3",
     "amphp/parallel": "^2.3.3",
@@ -44,7 +44,7 @@
       "dealerdirect/phpcodesniffer-composer-installer": true
     },
     "platform": {
-      "php": "8.2.99"
+      "php": "8.3.99"
     }
   },
   "scripts": {

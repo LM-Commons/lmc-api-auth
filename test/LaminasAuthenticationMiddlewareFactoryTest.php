@@ -7,11 +7,13 @@ namespace LmcTest\Api\Auth;
 use Laminas\Authentication\AuthenticationService;
 use Lmc\Api\Auth\LaminasAuthenticationMiddleware;
 use Lmc\Api\Auth\LaminasAuthenticationMiddlewareFactory;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 final class LaminasAuthenticationMiddlewareFactoryTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testInvoke(): void
     {
         $container = $this->createMock(ContainerInterface::class);

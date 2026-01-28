@@ -11,6 +11,7 @@ use Lmc\Api\Auth\Identity\GuestIdentity;
 use Lmc\Api\Auth\Identity\IdentityInterface;
 use Lmc\Api\Auth\Repository\ApiAccessKeyRepositoryInterface;
 use Override;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,6 +30,7 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
         parent::setUp();
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testWithIdentity(): void
     {
         $this->request->expects($this->once())->method('getAttribute')
@@ -41,6 +43,7 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
         $middleware->process($this->request, $this->handler);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testWithNullClientIdAndSecret(): void
     {
         $this->request->expects($this->once())->method('getAttribute')

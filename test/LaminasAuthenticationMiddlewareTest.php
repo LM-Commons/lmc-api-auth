@@ -10,6 +10,7 @@ use Lmc\Api\Auth\Identity\GuestIdentity;
 use Lmc\Api\Auth\Identity\IdentityInterface;
 use Lmc\Api\Auth\LaminasAuthenticationMiddleware;
 use Override;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,6 +31,7 @@ final class LaminasAuthenticationMiddlewareTest extends TestCase
         parent::setUp();
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testWithoutIdentity(): void
     {
         $this->authenticationService->expects($this->once())->method('hasIdentity')->willReturn(false);
@@ -42,6 +44,7 @@ final class LaminasAuthenticationMiddlewareTest extends TestCase
         $middleware->process($this->request, $this->handler);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testWithIdentity(): void
     {
         $identity = 'foo';
