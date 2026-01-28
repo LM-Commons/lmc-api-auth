@@ -7,11 +7,13 @@ namespace LmcTest\Api\Auth;
 use Lmc\Api\Auth\ApiAccessKeyAuthenticationMiddleware;
 use Lmc\Api\Auth\ApiAccessKeyAuthenticationMiddlewareFactory;
 use Lmc\Api\Auth\Repository\ApiAccessKeyRepositoryInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 final class ApiAccessKeyAuthenticationMiddlewareFactoryTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testInvoke(): void
     {
         $container = $this->createMock(ContainerInterface::class);
