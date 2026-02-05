@@ -29,7 +29,8 @@ final readonly class ApiAccessKeyAuthenticationMiddleware implements MiddlewareI
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // if there is already an identity, do nothing
-        if ($request->getAttribute(IdentityInterface::class) !== null) {
+        $identity = $request->getAttribute(IdentityInterface::class);
+        if ($identity !== null && ! $identity instanceof GuestIdentity) {
             return $handler->handle($request);
         }
 

@@ -27,6 +27,12 @@ final readonly class LaminasAuthenticationMiddleware implements MiddlewareInterf
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        // if there is already an identity, do nothing
+        $identity = $request->getAttribute(IdentityInterface::class);
+        if ($identity !== null && ! $identity instanceof GuestIdentity) {
+            return $handler->handle($request);
+        }
+
         if ($this->authenticationService->hasIdentity()) {
             /** @var mixed $identity */
             $identity     = $this->authenticationService->getIdentity();
