@@ -21,7 +21,7 @@ final class ConfigProvider
     private function getDependencies(): array
     {
         return [
-            'aliases' => [
+            'aliases'   => [
                 AuthorizationInterface::class => AclAuthorization::class,
             ],
             'factories' => [
@@ -29,6 +29,7 @@ final class ConfigProvider
                 ApiAccessKeyAuthenticationMiddleware::class => ApiAccessKeyAuthenticationMiddlewareFactory::class,
                 LaminasAuthenticationMiddleware::class      => LaminasAuthenticationMiddlewareFactory::class,
                 AuthorizationRpcMiddleware::class           => AuthorizationRpcMiddlewareFactory::class,
+                AuthorizationRestMiddleware::class          => AuthorizationRestMiddlewareFactory::class,
             ],
         ];
     }
