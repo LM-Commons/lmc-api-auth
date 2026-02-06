@@ -64,11 +64,11 @@ final readonly class AuthorizationRestMiddleware implements MiddlewareInterface
         $identifier = $restConfig['route_identifier_name'] ?? null;
         if (null === $identifier) {
             // assume collection resource
-            return sprintf('%s::controller', $routeMatchName);
+            return sprintf('%s::collection', $routeMatchName);
         }
         if ($request->getAttribute($identifier) !== null) {
             return sprintf('%s::entity', $routeMatchName);
         }
-        return sprintf('%s::controller', $routeMatchName);
+        return sprintf('%s::collection', $routeMatchName);
     }
 }
