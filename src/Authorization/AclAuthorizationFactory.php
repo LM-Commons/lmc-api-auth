@@ -59,12 +59,10 @@ class AclAuthorizationFactory
         bool $denyByDefault
     ): void {
         if (isset($privileges['actions'])) {
-            foreach ($privileges['actions'] as $methods) {
-                $aclConfig[] = [
-                    'resource'   => sprintf('%s', $routeName),
-                    'privileges' => $this->createPrivilegesFromMethods($methods, $denyByDefault),
-                ];
-            }
+            $aclConfig[] = [
+                'resource'   => sprintf('%s', $routeName),
+                'privileges' => $this->createPrivilegesFromMethods($privileges['actions'], $denyByDefault),
+            ];
         }
 
         if (isset($privileges['collection'])) {
