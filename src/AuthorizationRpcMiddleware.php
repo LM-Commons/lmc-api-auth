@@ -43,7 +43,7 @@ final readonly class AuthorizationRpcMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $resource = sprintf('%s::%s', $routeMatchName, $request->getMethod());
+        $resource = sprintf('%s', $routeMatchName);
 
         if ($this->authorization->isAuthorized($identity, $resource, $request->getMethod())) {
             return $handler->handle($request);
