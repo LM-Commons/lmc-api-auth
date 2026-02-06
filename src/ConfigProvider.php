@@ -62,12 +62,10 @@ final class ConfigProvider
                      *
                     'route_name' => [
                         'actions' => [
-                            'action' => [
-                                'default' => boolean,
-                                'GET' => boolean,
-                                'POST' => boolean,
-                                // etc.
-                            ],
+                            'default' => boolean,
+                            'GET' => boolean,
+                            'POST' => boolean,
+                            // etc.
                         ],
                         'collection' => [
                             'default' => boolean,

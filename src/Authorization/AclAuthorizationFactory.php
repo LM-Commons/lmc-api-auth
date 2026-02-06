@@ -26,11 +26,12 @@ class AclAuthorizationFactory
     {
         /** @var array $config */
         $config = $container->get('config');
-        $config = $config['lmc_api']['authorization']['authorization'];
-        return $this->createAclFromConfig($config);
+        /** @var array $aclConfig */
+        $aclConfig = $config['lmc_api']['authentication']['authorization'];
+        return $this->createAclFromConfig($aclConfig);
     }
 
-    private function createAclFromConfig(mixed $config): AclAuthorization
+    private function createAclFromConfig(array $config): AclAuthorization
     {
         $aclConfig     = [];
         $denyByDefault = false;
@@ -40,6 +41,10 @@ class AclAuthorizationFactory
             unset($config['deny_by_default']);
         }
 
+        /**
+         * @var string $routeName
+         * @var array $privileges
+         */
         foreach ($config as $routeName => $privileges) {
             $this->createAclConfigFromPrivileges($routeName, $privileges, $aclConfig, $denyByDefault);
         }
@@ -54,10 +59,9 @@ class AclAuthorizationFactory
         bool $denyByDefault
     ): void {
         if (isset($privileges['actions'])) {
-            foreach ($privileges['actions'] as $action => $methods) {
-                $action      = lcfirst($action);
+            foreach ($privileges['actions'] as $methods) {
                 $aclConfig[] = [
-                    'resource'   => sprintf('%s::%s', $routeName, $action),
+                    'resource'   => sprintf('%s', $routeName),
                     'privileges' => $this->createPrivilegesFromMethods($methods, $denyByDefault),
                 ];
             }
