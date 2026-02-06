@@ -15,7 +15,7 @@
     "psr/http-server-middleware": "^1.0",
     "psr/container": "^1.1 || ^2.0",
     "laminas/laminas-permissions-acl": "^2.18",
-    "mezzio/mezzio-router": "^4.2"
+    "mezzio/mezzio-router": "^3.19"
   },
   "require-dev": {
     "laminas/laminas-coding-standard": "^3.1",
