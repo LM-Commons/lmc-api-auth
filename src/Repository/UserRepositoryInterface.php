@@ -8,5 +8,5 @@ use Lmc\Api\Auth\Identity\IdentityInterface;
 
 interface UserRepositoryInterface
 {
-    public function getByUserId(int|string $userId): IdentityInterface;
+    public function getByUserId(int|string $userId): ?IdentityInterface;
 }
