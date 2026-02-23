@@ -19,7 +19,7 @@ use function sprintf;
 final readonly class AuthorizationRpcMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private AuthorizationInterface   $authorization,
+        private AuthorizationInterface $authorization,
         private ResponseFactoryInterface $responseFactory,
     ) {
     }

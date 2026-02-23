@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Lmc\Api\Auth\Authorization;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 use function array_key_exists;
 use function array_keys;
 use function is_array;
-use function lcfirst;
 use function sprintf;
 
-class AclAuthorizationFactory
+final class AclAuthorizationFactory
 {
     protected array $httpMethods = [
         'DELETE' => true,
@@ -22,6 +23,10 @@ class AclAuthorizationFactory
         'PUT'    => true,
     ];
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function __invoke(ContainerInterface $container): AclAuthorization
     {
         /** @var array $config */
@@ -43,7 +48,7 @@ class AclAuthorizationFactory
 
         /**
          * @var string $routeName
-         * @var array $privileges
+         * @var array<array-key,array<array-key,mixed>> $privileges
          */
         foreach ($config as $routeName => $privileges) {
             $this->createAclConfigFromPrivileges($routeName, $privileges, $aclConfig, $denyByDefault);
@@ -52,6 +57,9 @@ class AclAuthorizationFactory
         return $this->createAclInstance($aclConfig);
     }
 
+    /**
+     * @param array<array-key,array<array-key,mixed>> $privileges
+     */
     private function createAclConfigFromPrivileges(
         string $routeName,
         array $privileges,
@@ -89,6 +97,10 @@ class AclAuthorizationFactory
             unset($methods['default']);
         }
 
+        /**
+         * @var string $method
+         * @var boolean $flag
+         */
         foreach ($methods as $method => $flag) {
             // If the flag evaluates true, and we're denying by default, OR
             // if the flag evaluates false, and we're allowing by default,
@@ -144,6 +156,7 @@ class AclAuthorizationFactory
     private function injectGrants(AclAuthorization $acl, string $grantType, array $rules): AclAuthorization
     {
         foreach ($rules as $set) {
+            // todo check if there is a case where this is executed
             if (! is_array($set) || ! isset($set['resource'])) {
                 continue;
             }
@@ -157,10 +170,12 @@ class AclAuthorizationFactory
     private function injectGrant(AclAuthorization $acl, string $grantType, array $ruleSet): void
     {
         // Add new resource to ACL
+        /** @var string $resource */
         $resource = $ruleSet['resource'];
-        $acl->addResource($ruleSet['resource']);
+        $acl->addResource($resource);
 
         // Deny guest specified privileges to resource
+        /** @var ?string $privileges */
         $privileges = $ruleSet['privileges'] ?? null;
 
         // null privileges means no permissions were setup; nothing to do

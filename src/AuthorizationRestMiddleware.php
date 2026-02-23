@@ -19,7 +19,7 @@ use function sprintf;
 final readonly class AuthorizationRestMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private AuthorizationInterface   $authorization,
+        private AuthorizationInterface $authorization,
         private ResponseFactoryInterface $responseFactory,
         private array $restConfig,
     ) {
@@ -28,6 +28,7 @@ final readonly class AuthorizationRestMiddleware implements MiddlewareInterface
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        /** @var IdentityInterface|null $identity */
         $identity = $request->getAttribute(IdentityInterface::class);
         if (! $identity instanceof IdentityInterface) {
             return $handler->handle($request);
@@ -61,6 +62,7 @@ final readonly class AuthorizationRestMiddleware implements MiddlewareInterface
             // Return a resource name as if it was a RPC call
             return sprintf('%s', $routeMatchName);
         }
+        /** @var ?string $identifier */
         $identifier = $restConfig['route_identifier_name'] ?? null;
         if (null === $identifier) {
             // assume collection resource

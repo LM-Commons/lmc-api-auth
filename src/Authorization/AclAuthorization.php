@@ -11,9 +11,9 @@ use Override;
 final class AclAuthorization extends Acl implements AuthorizationInterface
 {
     #[Override]
-    public function isAuthorized(IdentityInterface $identity, mixed $resource, mixed $privilege): bool
+    public function isAuthorized(IdentityInterface $identity, string $resource, string $privilege): bool
     {
-        if (null !== $resource && (! $this->hasResource($resource))) {
+        if (! $this->hasResource($resource)) {
             $this->addResource($resource);
         }
 
