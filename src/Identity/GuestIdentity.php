@@ -14,9 +14,10 @@ final class GuestIdentity implements IdentityInterface
     {
     }
 
+    #[Override]
     public function getRoleId(): string
     {
-        return static::$identity;
+        return self::$identity;
     }
 
     #[Override]

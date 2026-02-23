@@ -35,7 +35,7 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
     {
         $this->request->expects($this->once())->method('getAttribute')
             ->with(IdentityInterface::class)
-            ->willReturn(new GuestIdentity());
+            ->willReturn(new AuthenticatedIdentity('foo'));
         $this->handler->expects($this->once())->method('handle')->with($this->request);
         $middleware = new ApiAccessKeyAuthenticationMiddleware(
             $this->createMock(ApiAccessKeyRepositoryInterface::class),
@@ -109,7 +109,7 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
         $middleware->process($this->request, $this->handler);
     }
 
-    public function testWithValidIdentity(): void
+    public function testWithValidCredentials(): void
     {
         $apiAccessKey = $this->createMock(ApiAccessKeyInterface::class);
         $apiAccessKey->expects($this->once())->method('getClientSecret')
@@ -117,6 +117,33 @@ final class ApiAccessKeyAuthenticationMiddlewareTest extends TestCase
         $this->request->expects($this->once())->method('getAttribute')
             ->with(IdentityInterface::class)
             ->willReturn(null);
+        $this->request->expects($this->exactly(2))->method('getQueryParams')
+            ->willReturn([
+                'client_id'     => 'foo',
+                'client_secret' => 'bar',
+            ]);
+        $apiRepository = $this->createMock(ApiAccessKeyRepositoryInterface::class);
+        $apiRepository->expects($this->once())->method('getByClientId')
+            ->with('foo')->willReturn($apiAccessKey);
+        $this->request->expects($this->once())->method('withAttribute')
+            ->with(
+                IdentityInterface::class,
+                $this->isInstanceOf(AuthenticatedIdentity::class),
+            )
+            ->willReturnSelf();
+        $this->handler->expects($this->once())->method('handle');
+        $middleware = new ApiAccessKeyAuthenticationMiddleware($apiRepository);
+        $middleware->process($this->request, $this->handler);
+    }
+
+    public function testWithValidCredentialsGuestIdentity(): void
+    {
+        $apiAccessKey = $this->createMock(ApiAccessKeyInterface::class);
+        $apiAccessKey->expects($this->once())->method('getClientSecret')
+            ->willReturn('bar');
+        $this->request->expects($this->once())->method('getAttribute')
+            ->with(IdentityInterface::class)
+            ->willReturn(new GuestIdentity());
         $this->request->expects($this->exactly(2))->method('getQueryParams')
             ->willReturn([
                 'client_id'     => 'foo',

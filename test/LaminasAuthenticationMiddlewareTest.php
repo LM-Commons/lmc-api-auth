@@ -32,6 +32,17 @@ final class LaminasAuthenticationMiddlewareTest extends TestCase
     }
 
     #[AllowMockObjectsWithoutExpectations]
+    public function testWhenAlreadyIdentityPresentInAttributes(): void
+    {
+        $this->request->expects($this->once())->method('getAttribute')
+            ->with(IdentityInterface::class)
+            ->willReturn(new AuthenticatedIdentity('foo'));
+        $this->handler->expects($this->once())->method('handle')->with($this->request);
+        $middleware = new LaminasAuthenticationMiddleware($this->authenticationService);
+        $middleware->process($this->request, $this->handler);
+    }
+
+    #[AllowMockObjectsWithoutExpectations]
     public function testWithoutIdentity(): void
     {
         $this->authenticationService->expects($this->once())->method('hasIdentity')->willReturn(false);

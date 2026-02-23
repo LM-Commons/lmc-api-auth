@@ -1,0 +1,187 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Lmc\Api\Auth\Authorization;
+
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+
+use function array_key_exists;
+use function array_keys;
+use function is_array;
+use function sprintf;
+
+final class AclAuthorizationFactory
+{
+    protected array $httpMethods = [
+        'DELETE' => true,
+        'GET'    => true,
+        'PATCH'  => true,
+        'POST'   => true,
+        'PUT'    => true,
+    ];
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function __invoke(ContainerInterface $container): AclAuthorization
+    {
+        /** @var array $config */
+        $config = $container->get('config');
+        /** @var array $aclConfig */
+        $aclConfig = $config['lmc_api']['authentication']['authorization'];
+        return $this->createAclFromConfig($aclConfig);
+    }
+
+    private function createAclFromConfig(array $config): AclAuthorization
+    {
+        $aclConfig     = [];
+        $denyByDefault = false;
+
+        if (array_key_exists('deny_by_default', $config)) {
+            $denyByDefault = $aclConfig['deny_by_default'] = (bool) $config['deny_by_default'];
+            unset($config['deny_by_default']);
+        }
+
+        /**
+         * @var string $routeName
+         * @var array<array-key,array<array-key,mixed>> $privileges
+         */
+        foreach ($config as $routeName => $privileges) {
+            $this->createAclConfigFromPrivileges($routeName, $privileges, $aclConfig, $denyByDefault);
+        }
+
+        return $this->createAclInstance($aclConfig);
+    }
+
+    /**
+     * @param array<array-key,array<array-key,mixed>> $privileges
+     */
+    private function createAclConfigFromPrivileges(
+        string $routeName,
+        array $privileges,
+        array &$aclConfig,
+        bool $denyByDefault
+    ): void {
+        if (isset($privileges['actions'])) {
+            $aclConfig[] = [
+                'resource'   => sprintf('%s', $routeName),
+                'privileges' => $this->createPrivilegesFromMethods($privileges['actions'], $denyByDefault),
+            ];
+        }
+
+        if (isset($privileges['collection'])) {
+            $aclConfig[] = [
+                'resource'   => sprintf('%s::collection', $routeName),
+                'privileges' => $this->createPrivilegesFromMethods($privileges['collection'], $denyByDefault),
+            ];
+        }
+
+        if (isset($privileges['entity'])) {
+            $aclConfig[] = [
+                'resource'   => sprintf('%s::entity', $routeName),
+                'privileges' => $this->createPrivilegesFromMethods($privileges['entity'], $denyByDefault),
+            ];
+        }
+    }
+
+    private function createPrivilegesFromMethods(array $methods, bool $denyByDefault): array|null
+    {
+        $privileges = [];
+
+        if (isset($methods['default']) && $methods['default']) {
+            $privileges = $this->httpMethods;
+            unset($methods['default']);
+        }
+
+        /**
+         * @var string $method
+         * @var boolean $flag
+         */
+        foreach ($methods as $method => $flag) {
+            // If the flag evaluates true, and we're denying by default, OR
+            // if the flag evaluates false, and we're allowing by default,
+            // THEN no rule needs to be added
+            if (
+                ( $denyByDefault && $flag)
+                || (! $denyByDefault && ! $flag)
+            ) {
+                if (isset($privileges[$method])) {
+                    unset($privileges[$method]);
+                }
+                continue;
+            }
+
+            // Otherwise, we need to add a rule
+            $privileges[$method] = true;
+        }
+
+        if (empty($privileges)) {
+            return null;
+        }
+
+        return array_keys($privileges);
+    }
+
+    private function createAclInstance(array $config): AclAuthorization
+    {
+        // Determine whether we are whitelisting or blacklisting
+        $denyByDefault = false;
+        if (array_key_exists('deny_by_default', $config)) {
+            $denyByDefault = (bool) $config['deny_by_default'];
+            unset($config['deny_by_default']);
+        }
+
+        // By default, create an open ACL
+        $acl = new AclAuthorization();
+        $acl->addRole('guest');
+        $acl->allow();
+
+        $grant = 'deny';
+        if ($denyByDefault) {
+            $acl->deny('guest', null, null);
+            $grant = 'allow';
+        }
+
+        if (! empty($config)) {
+            return $this->injectGrants($acl, $grant, $config);
+        }
+
+        return $acl;
+    }
+
+    private function injectGrants(AclAuthorization $acl, string $grantType, array $rules): AclAuthorization
+    {
+        foreach ($rules as $set) {
+            // todo check if there is a case where this is executed
+            if (! is_array($set) || ! isset($set['resource'])) {
+                continue;
+            }
+
+            $this->injectGrant($acl, $grantType, $set);
+        }
+
+        return $acl;
+    }
+
+    private function injectGrant(AclAuthorization $acl, string $grantType, array $ruleSet): void
+    {
+        // Add new resource to ACL
+        /** @var string $resource */
+        $resource = $ruleSet['resource'];
+        $acl->addResource($resource);
+
+        // Deny guest specified privileges to resource
+        /** @var ?string $privileges */
+        $privileges = $ruleSet['privileges'] ?? null;
+
+        // null privileges means no permissions were setup; nothing to do
+        if (null === $privileges) {
+            return;
+        }
+        $acl->$grantType('guest', $resource, $privileges);
+    }
+}
