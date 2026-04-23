@@ -15,7 +15,7 @@ This component provides middlewares to authenticate API requests.
 
 ## Installation
 
-You can install the LMC API Problem for Mezzio library with composer:
+You can install the LMC API Authentication for Mezzio library with composer:
 
 ```sh
 $ php composer.phar require lm-commons/lmc-api-auth
