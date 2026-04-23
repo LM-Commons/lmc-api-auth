@@ -8,6 +8,7 @@ use Lmc\Api\Auth\Authorization\AuthorizationInterface;
 use Lmc\Api\Auth\AuthorizationRpcMiddleware;
 use Lmc\Api\Auth\Identity\IdentityInterface;
 use LmcTest\Api\Auth\Assets\IdentityGetId;
+use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use Override;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -16,6 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 #[CoversClass(AuthorizationRpcMiddleware::class)]
@@ -63,8 +65,7 @@ final class AuthorizationRpcMiddlewareTest extends TestCase
     #[AllowMockObjectsWithoutExpectations]
     public function testNoRouteMatchName(): void
     {
-        $routeResult = $this->createMock(RouteResult::class);
-        $routeResult->expects($this->once())->method('getMatchedRouteName')->willReturn(false);
+        $routeResult = RouteResult::fromRouteFailure([]);
         $this->request->expects($this->exactly(2))->method('getAttribute')
             ->willReturnMap([
                 [IdentityInterface::class, new IdentityGetId()],
@@ -78,9 +79,14 @@ final class AuthorizationRpcMiddlewareTest extends TestCase
     #[AllowMockObjectsWithoutExpectations]
     public function testAuthorized(): void
     {
-        $routeResult = $this->createMock(RouteResult::class);
-        $routeResult->expects($this->once())->method('getMatchedRouteName')->willReturn('foo');
-        $identity = new IdentityGetId();
+        $route       = new Route(
+            '/foo',
+            $this->createStub(MiddlewareInterface::class),
+            null,
+            'foo'
+        );
+        $routeResult = RouteResult::fromRoute($route);
+        $identity    = new IdentityGetId();
         $this->request->expects($this->exactly(2))->method('getAttribute')
             ->willReturnMap([
                 [IdentityInterface::class, $identity],
@@ -98,9 +104,14 @@ final class AuthorizationRpcMiddlewareTest extends TestCase
     #[AllowMockObjectsWithoutExpectations]
     public function testNotAuthorized(): void
     {
-        $routeResult = $this->createMock(RouteResult::class);
-        $routeResult->expects($this->once())->method('getMatchedRouteName')->willReturn('foo');
-        $identity = new IdentityGetId();
+        $route       = new Route(
+            '/foo',
+            $this->createStub(MiddlewareInterface::class),
+            null,
+            'foo'
+        );
+        $routeResult = RouteResult::fromRoute($route);
+        $identity    = new IdentityGetId();
         $this->request->expects($this->exactly(2))->method('getAttribute')
             ->willReturnMap([
                 [IdentityInterface::class, $identity],
