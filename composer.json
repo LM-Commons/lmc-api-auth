@@ -15,13 +15,13 @@
     "psr/http-server-middleware": "^1.0",
     "psr/container": "^1.1 || ^2.0",
     "laminas/laminas-permissions-acl": "^2.18",
-    "mezzio/mezzio-router": "^3.19"
+    "mezzio/mezzio-router": "^3.19 || ^4.0"
   },
   "require-dev": {
     "laminas/laminas-coding-standard": "^3.1",
     "phpunit/phpunit": "^12.5.14",
     "psalm/plugin-phpunit": "^0.19.5",
-    "vimeo/psalm": "6.15.1",
+    "vimeo/psalm": "6.16.1",
     "amphp/parallel": "^2.3.3",
     "amphp/dns": "^2.4.0",
     "amphp/socket": "^2.3.1"

@@ -63,8 +63,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
     #[AllowMockObjectsWithoutExpectations]
     public function testNoRouteMatchName(): void
     {
-        $routeResult = $this->createMock(RouteResult::class);
-        $routeResult->expects($this->once())->method('getMatchedRouteName')->willReturn(false);
+        $routeResult = RouteResult::fromRouteFailure([]);
         $this->request->expects($this->exactly(2))->method('getAttribute')
             ->willReturnMap([
                 [IdentityInterface::class, new IdentityGetId()],
