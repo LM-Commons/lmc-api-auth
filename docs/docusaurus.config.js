@@ -54,6 +54,13 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: '1.x (latest)',
+              badge: true,
+            },
+          },
           sidebarPath: './sidebars.js',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -103,7 +110,10 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-//          {to: '/blog', label: 'Blog', position: 'left'},
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
+          },
             {
                 href: 'https://lm-commons.github.io',
                 label: 'LM-Commons',
