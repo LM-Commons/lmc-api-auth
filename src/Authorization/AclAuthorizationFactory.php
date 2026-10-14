@@ -10,7 +10,6 @@ use Psr\Container\NotFoundExceptionInterface;
 
 use function array_key_exists;
 use function array_keys;
-use function is_array;
 use function sprintf;
 
 final class AclAuthorizationFactory
@@ -156,11 +155,6 @@ final class AclAuthorizationFactory
     private function injectGrants(AclAuthorization $acl, string $grantType, array $rules): AclAuthorization
     {
         foreach ($rules as $set) {
-            // todo check if there is a case where this is executed
-            if (! is_array($set) || ! isset($set['resource'])) {
-                continue;
-            }
-
             $this->injectGrant($acl, $grantType, $set);
         }
 
