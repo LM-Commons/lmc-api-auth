@@ -88,6 +88,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @param array<array-key, array<array-key, mixed>> $config
      */
     #[DataProvider('configProvider')]
     #[AllowMockObjectsWithoutExpectations]
@@ -116,7 +117,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
         $response->method('getStatusCode')->willReturn(403);
         $container = $this->createStub(ContainerInterface::class);
         $container->method('get')->willReturnMap([
-            ['config', $config]
+            ['config', $config],
         ]);
         $aclAuthorization = (new AclAuthorizationFactory())($container);
 
@@ -125,6 +126,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
         } else {
             $this->responseFactory->method('createResponse')->with(403, 'Forbidden')->willReturn($response);
         }
+
         $middleware = new AuthorizationRestMiddleware(
             $aclAuthorization,
             $this->responseFactory,
@@ -139,7 +141,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
     public static function configProvider(): array
     {
         return [
-            'empty_config'          => [
+            'empty_config'                                 => [
                 'config'       => [
                     'lmc_api' => [
                         'authentication' => [
@@ -158,7 +160,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
                 'method'       => 'GET',
                 'isAuthorized' => true,
             ],
-            'collection_with_identity' => [
+            'collection_with_identity'                     => [
                 'config'       => [
                     'lmc_api' => [
                         'authentication' => [
@@ -179,7 +181,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
                 'method'       => 'GET',
                 'isAuthorized' => true,
             ],
-            'collection_no_identity_deny_on_get' => [
+            'collection_no_identity_deny_on_get'           => [
                 'config'       => [
                     'lmc_api' => [
                         'authentication' => [
@@ -201,7 +203,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
                 'method'       => 'GET',
                 'isAuthorized' => false,
             ],
-            'collection_no_identity_allow_on_get' => [
+            'collection_no_identity_allow_on_get'          => [
                 'config'       => [
                     'lmc_api' => [
                         'authentication' => [
@@ -223,7 +225,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
                 'method'       => 'GET',
                 'isAuthorized' => true,
             ],
-            'get_entity_no_identity_deny_on_get'  => [
+            'get_entity_no_identity_deny_on_get'           => [
                 'config'       => [
                     'lmc_api' => [
                         'authentication' => [
@@ -248,7 +250,7 @@ final class AuthorizationRestMiddlewareTest extends TestCase
                 'isAuthorized' => false,
                 'id'           => 1,
             ],
-            'get_entity_no_identity_allow_on_get'  => [
+            'get_entity_no_identity_allow_on_get'          => [
                 'config'       => [
                     'lmc_api' => [
                         'authentication' => [

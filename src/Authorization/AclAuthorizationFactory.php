@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lmc\Api\Auth\Authorization;
 
+use Lmc\Api\Auth\Exception\InvalidConfigurationException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -28,10 +29,11 @@ final class AclAuthorizationFactory
      */
     public function __invoke(ContainerInterface $container): AclAuthorization
     {
-        /** @var array $config */
-        $config = $container->get('config');
-        /** @var array $aclConfig */
-        $aclConfig = $config['lmc_api']['authentication']['authorization'];
+//        /** @var array $config */
+//        $config = $container->get('config');
+//        /** @var array $aclConfig */
+//        $aclConfig = $config['lmc_api']['authentication']['authorization'];
+        $aclConfig = $this->getConfig($container);
         return $this->createAclFromConfig($aclConfig);
     }
 
@@ -154,6 +156,7 @@ final class AclAuthorizationFactory
 
     private function injectGrants(AclAuthorization $acl, string $grantType, array $rules): AclAuthorization
     {
+        /** @var array $set */
         foreach ($rules as $set) {
             $this->injectGrant($acl, $grantType, $set);
         }
@@ -177,5 +180,22 @@ final class AclAuthorizationFactory
             return;
         }
         $acl->$grantType('guest', $resource, $privileges);
+    }
+
+    private function getConfig(ContainerInterface $container): array
+    {
+        /** @var array $config */
+        $config = $container->get('config');
+        if (! isset($config['lmc_api'])) {
+            throw new InvalidConfigurationException('Missing "lmc_api" key in configuration');
+        }
+        /** @var array $config */
+        $config = $config['lmc_api'];
+        if (! isset($config['authentication'])) {
+            throw new InvalidConfigurationException('Missing "authentication" key in configuration');
+        }
+        /** @var array<array-key, array> $config */
+        $config = $config['authentication'];
+        return $config['authorization'] ?? [];
     }
 }

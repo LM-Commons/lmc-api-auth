@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LmcTest\Api\Auth\Authorization;
 
 use Lmc\Api\Auth\Authorization\AclAuthorizationFactory;
+use Lmc\Api\Auth\Exception\InvalidConfigurationException;
 use Lmc\Api\Auth\Identity\GuestIdentity;
 use LmcTest\Api\Auth\Assets\IdentityGetId;
 use Override;
@@ -47,6 +48,38 @@ final class AclAuthorizationFactoryTest extends TestCase
         $this->assertFalse($aclAuthorization->hasResource('foo'));
         $this->assertFalse($aclAuthorization->hasRole('foo'));
         $this->assertTrue($aclAuthorization->isAuthorized(new IdentityGetId(), 'bar', 'foo'));
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testInvalidConfigMissingLmcApi(): void
+    {
+        $config = [];
+        $this->container->expects($this->once())->method('get')
+            ->with('config')
+            ->willReturn($config);
+        $this->expectException(InvalidConfigurationException::class);
+        $factory = new AclAuthorizationFactory();
+        $factory($this->container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testInvalidConfigMissingAuthentication(): void
+    {
+        $config = [
+            'lmc_api' => [],
+        ];
+        $this->container->expects($this->once())->method('get')
+            ->with('config')
+            ->willReturn($config);
+        $this->expectException(InvalidConfigurationException::class);
+        $factory = new AclAuthorizationFactory();
+        $factory($this->container);
     }
 
     /**

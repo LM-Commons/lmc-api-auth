@@ -12,17 +12,6 @@
       <code><![CDATA[ResponseInterface]]></code>
     </PossiblyUnusedReturnValue>
   </file>
-  <file src="src/Authorization/AclAuthorizationFactory.php">
-    <MixedArrayAccess>
-      <code><![CDATA[$config['lmc_api']['authentication']]]></code>
-      <code><![CDATA[$config['lmc_api']['authentication']['authorization']]]></code>
-    </MixedArrayAccess>
-  </file>
-  <file src="src/AuthorizationRestMiddleware.php">
-    <PossiblyUnusedReturnValue>
-      <code><![CDATA[ResponseInterface]]></code>
-    </PossiblyUnusedReturnValue>
-  </file>
   <file src="src/AuthorizationRpcMiddleware.php">
     <PossiblyUnusedReturnValue>
       <code><![CDATA[ResponseInterface]]></code>
@@ -64,5 +53,13 @@
       <code><![CDATA[testConfig]]></code>
       <code><![CDATA[testConfig]]></code>
     </PossiblyInvalidArgument>
+  </file>
+  <file src="test/AuthorizationRestMiddlewareTest.php">
+    <MixedArgument>
+      <code><![CDATA[$config['lmc_api']['rest']]]></code>
+    </MixedArgument>
+    <MixedReturnStatement>
+      <code><![CDATA[array]]></code>
+    </MixedReturnStatement>
   </file>
 </files>
